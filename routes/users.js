@@ -31,6 +31,58 @@ router.get('/all',function(req,res){
 		
 	});
 });
+router.post('/login',function(req,res){
+	var email=req.body.email
+	var password= req.body.password
+	var values = [email,password];
+	var sql = "SELECT * FROM user where  email =? and password =? ";
+	pool.query(sql,values,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
+router.post('/signup',function(req,res){
+	var name=req.body.name
+	var email=req.body.email
+//	var password= req.body.password
+	var user_phone= req.body.user_phone
+	var city= req.body.city
 
+
+	var values = [name,email,user_phone, city];
+	var sql = "insert into user (name, email,user_phone,city) values(?,?,?,?) ";
+	pool.query(sql,values,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
 
 module.exports = router;
