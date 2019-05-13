@@ -8,7 +8,7 @@ var gcm = require('node-gcm');
  */
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.send('respond with a resource in users');
 });
 router.get('/all',function(req,res){
 	var sql = "SELECT * FROM user ";
@@ -58,13 +58,13 @@ router.post('/login',function(req,res){
 router.post('/signup',function(req,res){
 	var name=req.body.name
 	var email=req.body.email
-//	var password= req.body.password
+	var password= req.body.password
 	var user_phone= req.body.user_phone
 	var city= req.body.city
 
 
-	var values = [name,email,user_phone, city];
-	var sql = "insert into user (name, email,user_phone,city) values(?,?,?,?) ";
+	var values = [name,email,password,user_phone, city];
+	var sql = "insert into user (name, email,password,user_phone,city) values(?,?,?,?,?) ";
 	pool.query(sql,values,function(err,result){
 				if(err){
 			res.json({			
