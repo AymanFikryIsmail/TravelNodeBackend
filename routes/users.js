@@ -26,7 +26,7 @@ router.get('/all',function(req,res){
 				data : result,
 				message : "done"			
 			});		
-			
+			 
 		}		
 		
 	});
@@ -35,22 +35,35 @@ router.post('/login',function(req,res){
 	var email=req.body.email
 	var password= req.body.password
 	var values = [email,password];
-	var sql = "SELECT * FROM user where  email =? and password =? ";
+	var sql = "SELECT * FROM user where  email =? and password =?   ";
 	pool.query(sql,values,function(err,result){
 				if(err){
 			res.json({			
 				status : false,
-				data : null,
+				data : {},
 				message : err				
 			});			
 		}else{
-			
+			console.log("hash not verified : " +result.length == 0);
+			if (result.length > 0) {
+			console.log("hash not verified : " +result[0].password);
+			var o ={};
+				o.id = result[0].uid ;
+				o.name = result[0].name;
+				o.user_phone = result[0].user_phone;
+				o.email = result[0].email;
 			res.json({		
 				status : true,
 				data : result,
 				message : "done"			
 			});		
-			
+			}else{
+				res.json({			
+				status : false,
+				data : {},
+				message : 'Authentication failed. Wrong Details.',			
+			});	
+			}
 		}		
 		
 	});
