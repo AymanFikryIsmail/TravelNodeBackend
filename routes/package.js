@@ -129,8 +129,9 @@ router.get('/filter',function(req,res){
 	var maxPrice =req.query.maxPrice
 	var minDays =req.query.minDays
 	var maxDays =req.query.maxDays
-	var values = [travelFrom, travelTo, minPrice, maxPrice, minDays ,maxDays]
-	var sql = "SELECT * from packages WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?)" ;
+	var minRate = req.query.rate
+	var values = [travelFrom, travelTo, minPrice, maxPrice, minDays ,maxDays, minRate]
+	var sql = "SELECT * from packages WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?) and packages.cid=(SELECT company.cid from company where rate>=?)" ;
 	pool.query(sql,values,function(err,result){
 				if(err){
 			res.json({			
