@@ -11,6 +11,7 @@ router.get('/', function(req, res, next) {
     res.send('respond with a resource in packages');
   });
 router.get('/city',function(req,res){
+	// var d1 = new Date();
 	var sql = "SELECT travel_to from packages";
 	pool.query(sql,function(err,result){
 				if(err){
@@ -32,7 +33,7 @@ router.get('/city',function(req,res){
 	});
 });
 router.get('/city/packages',function(req,res){
-	var city =req.body.city
+	var city =req.query.city
 	var sql = "SELECT * from packages WHERE travel_to=?" ;
 	pool.query(sql,[city],function(err,result){
 				if(err){
@@ -55,10 +56,81 @@ router.get('/city/packages',function(req,res){
 });
 
 router.get('/search',function(req,res){
-	var travelFrom =req.body.from
-	var travelTo =req.body.to
+	var travelFrom =req.query.from
+	var travelTo =req.query.to
 	var values = [travelFrom, travelTo]
 	var sql = "SELECT * from packages WHERE travel_from =? and travel_to =?" ;
+	pool.query(sql,values,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
+router.get('/search/from',function(req,res){
+	var sql = "SELECT travel_from from packages" ;
+	pool.query(sql,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
+router.get('/search/to',function(req,res){
+	var sql = "SELECT travel_to from packages" ;
+	pool.query(sql,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
+
+router.get('/filter',function(req,res){
+	var travelFrom =req.query.from
+	var travelTo =req.query.to
+	var minPrice =req.query.minPrice
+	var maxPrice =req.query.maxPrice
+	var minDays =req.query.minDays
+	var maxDays =req.query.maxDays
+	var values = [travelFrom, travelTo, minPrice, maxPrice, minDays ,maxDays]
+	var sql = "SELECT * from packages WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?)" ;
 	pool.query(sql,values,function(err,result){
 				if(err){
 			res.json({			
