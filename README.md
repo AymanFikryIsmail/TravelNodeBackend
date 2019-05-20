@@ -18,8 +18,8 @@ Description : return all packages that the city has ( use it when you enter any 
 ************************************
 4] /packages/search
 Method : get
-variables : from,to
-Description : return all packages that match 'from' and to (  use it in search bar )
+variables : from,to,[dateFrom,dateTo(from datepicker withtype timestamp but those parameters are optional)]
+Description : return all packages that match 'from' and 'to' (  use it in search bar )
 ************************************
 5] /packages/search/from
 Method : get
@@ -35,4 +35,19 @@ Description : return all available cities to use in [to field] (  use it in auto
 Method : get
 variables : from, to, minPrice, maxPrice, minDays, maxDays, rate
 Description : return all available packages after filtering(  use it in filter )
+************************************
+8] /packages/offers
+Method : get
+variables : none
+Description : Getback all packages (use it in offers button)
+************************************
+9] /packages/recommended
+Method : get
+variables : none
+Description : Getback all packages which have +4 rate (use it in recommended button)
+************************************
+10] /packages/recent
+Method : get
+variables : none
+Description : Getback all packages which is added before 2 days (use it in recent button)
 ************************************
