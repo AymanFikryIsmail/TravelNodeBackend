@@ -75,7 +75,7 @@ router.get('/offers',function(req,res){
 		});
 	});
 router.get('/city',function(req,res){
-	var sql = "SELECT travel_to from packages where date >= CURRENT_TIMESTAMP";
+	var sql = "SELECT photo_path , travel_to , p_name from packages , package_photo  where date >= CURRENT_TIMESTAMP and package_photo.pid=packages.pid";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
