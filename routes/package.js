@@ -3,7 +3,6 @@ var router = express.Router();
 //var token = require('../config/token');
 var pool = require('../config/config');
 /* var hash = require('password-hash');
-
 var gcm = require('node-gcm');
  */
 /* GET packages listing. */
@@ -212,8 +211,3 @@ router.get('/filter',function(req,res){
 });
 
 module.exports = router;
-
-
-
-
-
