@@ -76,7 +76,7 @@ router.get('/city',function(req,res){
 });
 router.get('/city/packages',function(req,res){
 	var city =req.query.city
-	var sql = "SELECT * from packages WHERE travel_to=? and date >= CURRENT_TIMESTAMP" ;
+	var sql = "SELECT * (SELECT photo_path from package_photo where package_photo.cid = packages.cid) from packages WHERE travel_to=? and date >= CURRENT_TIMESTAMP" ;
 	pool.query(sql,[city],function(err,result){
 				if(err){
 			res.json({			
@@ -100,14 +100,8 @@ router.get('/city/packages',function(req,res){
 router.get('/search',function(req,res){
 	var travelFrom =req.query.from
 	var travelTo =req.query.to
-	var dateFrom = req.query.dateFrom
-	var dateTo = req.query.dateTo
-	var values = [travelFrom, travelTo, dateFrom, dateTo]
-	if(dateFrom && dateTo){
-		var sql = "SELECT * from packages WHERE travel_from =? and travel_to =? and date >= CURRENT_TIMESTAMP and date between ? and ?" ;
-	} else {
-		var sql = "SELECT * from packages WHERE travel_from =? and travel_to =? and date >= CURRENT_TIMESTAMP" ;
-	}
+	var values = [travelFrom, travelTo]
+	var sql = "SELECT * from packages WHERE travel_from =? and travel_to =? and date >= CURRENT_TIMESTAMP" ;
 	pool.query(sql,values,function(err,result){
 				if(err){
 			res.json({			
@@ -178,8 +172,15 @@ router.get('/filter',function(req,res){
 	var minDays =req.query.minDays
 	var maxDays =req.query.maxDays
 	var minRate = req.query.rate
-	var values = [travelFrom, travelTo, minPrice, maxPrice, minDays ,maxDays, minRate]
-	var sql = "SELECT * from packages WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?) and packages.cid=(SELECT company.cid from company where rate>=?) and date >= CURRENT_TIMESTAMP" ;
+	var dateFrom = req.query.dateFrom
+	var dateTo = req.query.dateTo
+	var values = [travelFrom, travelTo, minPrice, maxPrice, minDays ,maxDays, minRate, dateFrom, dateTo]
+	
+	if(dateFrom && dateTo){
+		var sql = "SELECT * from packages WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?) and packages.cid=(SELECT company.cid from company where rate>=?) and date >= CURRENT_TIMESTAMP and date between ? and ?" ;
+	} else {
+		var sql = "SELECT * from packages WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?) and packages.cid=(SELECT company.cid from company where rate>=?) and date >= CURRENT_TIMESTAMP" ;
+	}
 	pool.query(sql,values,function(err,result){
 				if(err){
 			res.json({			
