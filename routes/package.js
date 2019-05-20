@@ -11,7 +11,6 @@ var gcm = require('node-gcm');
 router.get('/', function(req, res, next) {
     res.send('respond with a resource in packages');
 	});
-<<<<<<< HEAD
 	router.get('/recent',function(req,res){
 		var date = new Date()-2
 		var sql = "SELECT * from packages where addingDate  >= ? and date > CURRENT_TIMESTAMP ";
@@ -57,10 +56,6 @@ router.get('/', function(req, res, next) {
 	});
 router.get('/city',function(req,res){
 	var sql = "SELECT DISTINCT travel_to from packages where date >= CURRENT_TIMESTAMP";
-=======
-router.get('/city',function(req,res){
-	var sql = "SELECT photo_path , travel_to , p_name from packages , package_photo  where date >= CURRENT_TIMESTAMP and package_photo.pid=packages.pid";
->>>>>>> c06ff9fdf24aabc1ebf1ad34b9df8217a996471e
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
@@ -84,7 +79,8 @@ router.get('/city',function(req,res){
 
 router.get('/city/packages',function(req,res){
 	var city =req.query.city
-	var sql = "SELECT * from packages WHERE travel_to=?" ;      //search by travel to
+	//search by travel to
+	var sql = "SELECT * from packages WHERE travel_to=?" ; 
 	pool.query(sql,[city],function(err,result){
 				if(err){
 			res.json({			
@@ -131,11 +127,7 @@ router.get('/search',function(req,res){
 });
 
 router.get('/search/from',function(req,res){
-<<<<<<< HEAD
 	var sql = "SELECT DISTINCT travel_from from packages where date >= CURRENT_TIMESTAMP" ;
-=======
-	var sql = "SELECT travel_from from packages" ;
->>>>>>> c06ff9fdf24aabc1ebf1ad34b9df8217a996471e
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
@@ -156,11 +148,7 @@ router.get('/search/from',function(req,res){
 	});
 });
 router.get('/search/to',function(req,res){
-<<<<<<< HEAD
 	var sql = "SELECT DISTINCT travel_to from packages where date >= CURRENT_TIMESTAMP" ;
-=======
-	var sql = "SELECT travel_to from packages" ;
->>>>>>> c06ff9fdf24aabc1ebf1ad34b9df8217a996471e
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
