@@ -12,8 +12,7 @@ router.get('/', function(req, res, next) {
     res.send('respond with a resource in packages');
 	});
 router.get('/city',function(req,res){
-	// var d1 = new Date();
-	var sql = "SELECT travel_to from packages";        //autocomplete
+	var sql = "SELECT photo_path , travel_to , p_name from packages , package_photo  where date >= CURRENT_TIMESTAMP and package_photo.pid=packages.pid";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
