@@ -74,9 +74,10 @@ router.get('/city',function(req,res){
 		
 	});
 });
+
 router.get('/city/packages',function(req,res){
 	var city =req.query.city
-	var sql = "SELECT * (SELECT photo_path from package_photo where package_photo.cid = packages.cid) from packages WHERE travel_to=? and date >= CURRENT_TIMESTAMP" ;
+	var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE travel_to=? and date >= CURRENT_TIMESTAMP GROUP BY t1.pid" ;
 	pool.query(sql,[city],function(err,result){
 				if(err){
 			res.json({			
