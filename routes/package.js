@@ -74,7 +74,13 @@ router.get('/city',function(req,res){
 		
 	});
 });
+// SELECT t1.*, GROUP_CONCAT(t2.date) AS dates
+// FROM Table1 t1
+// LEFT JOIN Table2 t2
+//   ON t2.ID_adv = t1.ID_adv
+// GROUP BY t1.ID_adv
 
+// SELECT photo_path from package_photo where package_photo.cid = packages.cid
 router.get('/city/packages',function(req,res){
 	var city =req.query.city
 	var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE travel_to=? and date >= CURRENT_TIMESTAMP GROUP BY t1.pid" ;
@@ -86,11 +92,14 @@ router.get('/city/packages',function(req,res){
 				message : err				
 			});			
 		}else{
-			
+			var newResult = result.map(function(element){
+				element["paths"]=element["paths"].split(",")
+				return element
+			})
 			res.json({		
 				status : true,
-				data : result,
-				message : "done"			
+				data : newResult,
+				message : "done"		
 			});		
 			
 		}		
