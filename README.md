@@ -46,5 +46,13 @@ Method : get
 variables : from, to, minPrice, maxPrice, minDays, maxDays, rate, [dateFrom,dateTo(from datepicker withtype timestamp but those parameters are optional)]
 Description : return all available packages after filtering(  use it in filter )
 ************************************
-
-
+10] /packages/favorite
+Method : get
+variables : user_id
+Description : return favorite packages
+************************************
+10] /packages/favorite/update
+Method : get
+variables : user_id,package_id
+Description : add or remove from favorite
+************************************

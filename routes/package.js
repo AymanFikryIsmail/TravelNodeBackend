@@ -20,7 +20,14 @@ router.get('/recent',function(req,res){
 				message : err				
 			});			
 		}else{
-			
+			if(result.length>0){
+				var result = result.map(function(element){
+					if(element["paths"]){
+						element["paths"]=element["paths"].split(",")
+					}
+					return element
+				})
+			}
 			res.json({		
 				status : true,
 				data : result,
@@ -32,7 +39,7 @@ router.get('/recent',function(req,res){
 	});
 });
 router.get('/recommended',function(req,res){
-	var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE packages.cid=(SELECT company.cid from company where rate>=4) and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
+	var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE t1.cid=(SELECT company.cid from company where rate>=4) and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
@@ -41,7 +48,14 @@ router.get('/recommended',function(req,res){
 				message : err				
 			});			
 		}else{
-			
+			if(result.length>0){
+				var result = result.map(function(element){
+					if(element["paths"]){
+						element["paths"]=element["paths"].split(",")
+					}
+					return element
+				})
+			}
 			res.json({		
 				status : true,
 				data : result,
@@ -85,13 +99,17 @@ router.get('/city/packages',function(req,res){
 				message : err				
 			});			
 		}else{
-			var newResult = result.map(function(element){
-				element["paths"]=element["paths"].split(",")
-				return element
-			})
+			if(result.length>0){
+				var result = result.map(function(element){
+					if(element["paths"]){
+						element["paths"]=element["paths"].split(",")
+					}
+					return element
+				})
+			}
 			res.json({		
 				status : true,
-				data : newResult,
+				data : result,
 				message : "done"		
 			});		
 			
@@ -113,7 +131,14 @@ router.get('/search',function(req,res){
 				message : err				
 			});			
 		}else{
-			
+			if(result.length>0){
+				var result = result.map(function(element){
+					if(element["paths"]){
+						element["paths"]=element["paths"].split(",")
+					}
+					return element
+				})
+			}
 			res.json({		
 				status : true,
 				data : result,
@@ -180,9 +205,9 @@ router.get('/filter',function(req,res){
 	var values = [travelFrom, travelTo, minPrice, maxPrice, minDays ,maxDays, minRate, dateFrom, dateTo]
 	
 	if(dateFrom && dateTo){
-		var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?) and packages.cid=(SELECT company.cid from company where rate>=?) and date > CURRENT_TIMESTAMP and date between ? and ? GROUP BY t1.pid" ;
+		var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?) and t1.cid=(SELECT company.cid from company where rate>=?) and date > CURRENT_TIMESTAMP and date between ? and ? GROUP BY t1.pid" ;
 	} else {
-		var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?) and packages.cid=(SELECT company.cid from company where rate>=?) and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
+		var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE travel_from =? and travel_to =? and (price between ? and ?) and (duration between ? and ?) and t1.cid=(SELECT company.cid from company where rate>=?) and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
 	}
 	pool.query(sql,values,function(err,result){
 				if(err){
@@ -192,7 +217,14 @@ router.get('/filter',function(req,res){
 				message : err				
 			});			
 		}else{
-			
+			if(result.length>0){
+				var result = result.map(function(element){
+					if(element["paths"]){
+						element["paths"]=element["paths"].split(",")
+					}
+					return element
+				})
+			}
 			res.json({		
 				status : true,
 				data : result,
@@ -203,5 +235,86 @@ router.get('/filter',function(req,res){
 		
 	});
 });
-
+router.get('/favorite',function(req,res){
+	var userId =req.query.user_id
+	var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE date > CURRENT_TIMESTAMP and t1.pid = (SELECT  pid FROM user_favourite where uid=?and pid=t1.pid) GROUP BY t1.pid" ;
+	pool.query(sql,[userId],function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			if(result.length>0){
+				var result = result.map(function(element){
+					if(element["paths"]){
+						element["paths"]=element["paths"].split(",")
+					}
+					return element
+				})
+			}
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
+router.get('/favorite/update',function(req,res){
+	var userId = req.query.user_id
+	var packageId = req.query.package_id
+	var values = [userId, packageId]
+	var sql = "SELECT * FROM user_favourite WHERE uid=? and pid=?";
+	pool.query(sql,values,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			if(result.length>0){
+				var values = [userId, packageId]
+				var sqlRemove = "DELETE FROM user_favourite WHERE uid=? and pid=?";
+				pool.query(sqlRemove,values,function(err){
+					if(err){
+						res.json({			
+							status : false,
+							data : null,
+							message : err				
+						});			
+					} else {
+						res.json({		
+							status : true,
+							message : " package deleted from favorite"			
+						});
+					}
+				})
+			} else {
+				var values = [packageId, userId]
+				var sqlAdd = "INSERT INTO user_favourite VALUES (?, ?);";
+				pool.query(sqlAdd,values,function(err,result){
+					if(err){
+						res.json({			
+							status : false,
+							data : null,
+							message : err				
+						});			
+					} else {
+						res.json({		
+							status : true,
+							message : " package added to favorite"			
+						});
+					}
+				})
+			}	
+			
+		}		
+		
+	});
+});
 module.exports = router;
