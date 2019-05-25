@@ -53,7 +53,7 @@ router.get('/', function(req, res, next) {
 		});
 	});
 router.get('/city',function(req,res){
-	var sql = "SELECT DISTINCT travel_to from packages where date >= CURRENT_TIMESTAMP";
+	var sql = "SELECT DISTINCT * from packages where date >= CURRENT_TIMESTAMP";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
