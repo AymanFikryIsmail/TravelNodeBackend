@@ -9,49 +9,49 @@ var gcm = require('node-gcm');
 router.get('/', function(req, res, next) {
     res.send('respond with a resource in packages');
 	});
-	router.get('/recent',function(req,res){
-		var date = new Date()-2
-		var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE addingDate  >= ? and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
-		pool.query(sql,[date],function(err,result){
-					if(err){
-				res.json({			
-					status : false,
-					data : null,
-					message : err				
-				});			
-			}else{
-				
-				res.json({		
-					status : true,
-					data : result,
-					message : "done"			
-				});		
-				
-			}		
+router.get('/recent',function(req,res){
+	var date = new Date()-2
+	var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE addingDate  >= ? and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
+	pool.query(sql,[date],function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
 			
-		});
-	});
-	router.get('/recommended',function(req,res){
-		var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE packages.cid=(SELECT company.cid from company where rate>=4) and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
-		pool.query(sql,function(err,result){
-					if(err){
-				res.json({			
-					status : false,
-					data : null,
-					message : err				
-				});			
-			}else{
-				
-				res.json({		
-					status : true,
-					data : result,
-					message : "done"			
-				});		
-				
-			}		
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
 			
-		});
+		}		
+		
 	});
+});
+router.get('/recommended',function(req,res){
+	var sql = "SELECT t1.*, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE packages.cid=(SELECT company.cid from company where rate>=4) and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
+	pool.query(sql,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
 router.get('/city',function(req,res){
 	var sql = "SELECT * from cities where city_name=(SELECT DISTINCT travel_to FROM packages where date > CURRENT_TIMESTAMP)";
 	pool.query(sql,function(err,result){
