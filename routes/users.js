@@ -52,6 +52,7 @@ router.post('/login',function(req,res){
 				o.name = result[0].name;
 				o.user_phone = result[0].user_phone;
 				o.email = result[0].email;
+				o.city = result[0].city;
 			res.json({		
 				status : true,
 				data : o,
