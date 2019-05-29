@@ -290,6 +290,7 @@ router.get('/favorite/update',function(req,res){
 	var sql = "SELECT * FROM user_favourite WHERE uid=? and pid=?";
 	pool.query(sql,values,function(err,result){
 				if(err){
+					console.log("error at update favourite "+err)
 			res.json({			
 				status : false,
 				data : null,
@@ -297,17 +298,21 @@ router.get('/favorite/update',function(req,res){
 			});			
 		}else{
 			if(result.length>0){
+					console.log("result.length>0")
 				var values = [userId, packageId]
 				var sqlRemove = "DELETE FROM user_favourite WHERE uid=? and pid=?";
 				pool.query(sqlRemove,values,function(err){
 					if(err){
+					console.log("error at delete update favourite "+err)
 						res.json({			
 							status : false,
 							data : null,
 							message : err				
 						});			
 					} else {
+					console.log(" delete update favourite ")
 						res.json({		
+							data : false,
 							status : true,
 							message : " package deleted from favorite"			
 						});
@@ -315,16 +320,21 @@ router.get('/favorite/update',function(req,res){
 				})
 			} else {
 				var values = [packageId, userId]
+					console.log(" insert update favourite pid"+packageId + " uid "+  userId)
+
 				var sqlAdd = "INSERT INTO user_favourite VALUES (?, ?);";
 				pool.query(sqlAdd,values,function(err,result){
 					if(err){
+					console.log("error at insert update favourite "+err)
 						res.json({			
 							status : false,
 							data : null,
 							message : err				
 						});			
 					} else {
-						res.json({		
+					console.log(" insert update favourite ")
+						res.json({	
+							data : true,
 							status : true,
 							message : " package added to favorite"			
 						});
