@@ -17,7 +17,7 @@ router.get('/recent',function(req,res){
 			res.json({			
 				status : false,
 				data : null,
-				message : err				
+				message : err		
 			});			
 		}else{
 			if(result.length>0){
@@ -341,6 +341,31 @@ router.get('/favorite/update',function(req,res){
 					}
 				})
 			}	
+			
+		}		
+		
+	});
+});
+router.post('/booking',function(req,res){
+	var userId =req.body.user
+	var packageId =req.body.package
+	var adults =req.body.adults
+	var children =req.body.children
+	var values = [packageId, userId, adults, children]
+	var sql = "INSERT INTO user_package (pid,uid,tickets,discounted_tickets) VALUES (?, ?, ?, ?);" ;
+	pool.query(sql,values,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
 			
 		}		
 		
