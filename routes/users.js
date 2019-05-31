@@ -1,3 +1,21 @@
+// var jwt = require('jsonwebtoken');
+
+// var getToken = function(headers) {
+
+// 	if (headers && headers.authorization) {
+// 		var parted = headers.authorization.split(' ');
+// 		if (parted.length === 2) {
+// 			return parted[1];
+// 		} else {
+// 			return null;
+// 		}
+// 	} else {
+// 		return null;
+// 	}
+// };
+
+
+
 var express = require('express');
 var router = express.Router();
 //var token = require('../config/token');
@@ -24,7 +42,8 @@ router.get('/all',function(req,res){
 			res.json({		
 				status : true,
 				data : result,
-				message : "done"			
+				message : "done",
+				// token : getToken		
 			});		
 			 
 		}		
@@ -106,3 +125,6 @@ router.post('/signup',function(req,res){
 });
 
 module.exports = router;
+
+// module.exports.getToken = getToken;
+// module.exports.getUser = getUser;
