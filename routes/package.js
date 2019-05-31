@@ -74,7 +74,7 @@ router.get('/recommended',function(req,res){
 });
 router.get('/city',function(req,res){
 
-	var sql = "SELECT * from cities where city_name=(SELECT DISTINCT travel_to FROM packages where date > CURRENT_TIMESTAMP)";
+	var sql = "SELECT DISTINCT cities.* from cities JOIN packages ON cities.city_name=packages.travel_to where  date > CURRENT_TIMESTAMP";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
@@ -106,6 +106,7 @@ router.get('/city/packages',function(req,res){
 				message : err				
 			});			
 		}else{
+
 			if(result.length>0){
 				var result = result.map(function(element){
 					if(element["paths"]){
@@ -114,6 +115,7 @@ router.get('/city/packages',function(req,res){
 					if(!element["rate"]){
 						element["rate"]=0
 					}
+
 					return element
 				})
 			}
@@ -162,8 +164,31 @@ router.get('/search',function(req,res){
 		
 	});
 });
+
 router.get('/search/from',function(req,res){
 	var sql = "SELECT c_location FROM company where cid = (SELECT DISTINCT cid from packages where date > CURRENT_TIMESTAMP)";
+	pool.query(sql,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
+
+router.get('/search/all',function(req,res){
+	var sql = "SELECT DISTINCT city_name, c_location FROM company ,cities ";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
@@ -363,7 +388,7 @@ router.post('/booking',function(req,res){
 		}else{
 			res.json({		
 				status : true,
-				data : result,
+				data : "done",
 				message : "done"			
 			});		
 			
