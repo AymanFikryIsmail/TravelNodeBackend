@@ -73,7 +73,8 @@ router.get('/recommended',function(req,res){
 	});
 });
 router.get('/city',function(req,res){
-	var sql = "SELECT * from cities where city_name=(SELECT DISTINCT travel_to FROM packages where date > CURRENT_TIMESTAMP)";
+
+	var sql = "SELECT DISTINCT cities.* from cities JOIN packages ON cities.city_name=packages.travel_to where  date > CURRENT_TIMESTAMP";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
@@ -105,6 +106,7 @@ router.get('/city/packages',function(req,res){
 				message : err				
 			});			
 		}else{
+
 			if(result.length>0){
 				var result = result.map(function(element){
 					if(element["paths"]){
@@ -113,6 +115,7 @@ router.get('/city/packages',function(req,res){
 					if(!element["rate"]){
 						element["rate"]=0
 					}
+
 					return element
 				})
 			}
@@ -161,8 +164,31 @@ router.get('/search',function(req,res){
 		
 	});
 });
+
 router.get('/search/from',function(req,res){
 	var sql = "SELECT c_location FROM company where cid = (SELECT DISTINCT cid from packages where date > CURRENT_TIMESTAMP)";
+	pool.query(sql,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
+
+router.get('/search/all',function(req,res){
+	var sql = "SELECT DISTINCT city_name, c_location FROM company ,cities ";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
@@ -289,6 +315,7 @@ router.get('/favorite/update',function(req,res){
 	var sql = "SELECT * FROM user_favourite WHERE uid=? and pid=?";
 	pool.query(sql,values,function(err,result){
 				if(err){
+					console.log("error at update favourite "+err)
 			res.json({			
 				status : false,
 				data : null,
@@ -296,17 +323,21 @@ router.get('/favorite/update',function(req,res){
 			});			
 		}else{
 			if(result.length>0){
+					console.log("result.length>0")
 				var values = [userId, packageId]
 				var sqlRemove = "DELETE FROM user_favourite WHERE uid=? and pid=?";
 				pool.query(sqlRemove,values,function(err){
 					if(err){
+					console.log("error at delete update favourite "+err)
 						res.json({			
 							status : false,
 							data : null,
 							message : err				
 						});			
 					} else {
+					console.log(" delete update favourite ")
 						res.json({		
+							data : false,
 							status : true,
 							message : " package deleted from favorite"			
 						});
@@ -314,16 +345,21 @@ router.get('/favorite/update',function(req,res){
 				})
 			} else {
 				var values = [packageId, userId]
+					console.log(" insert update favourite pid"+packageId + " uid "+  userId)
+
 				var sqlAdd = "INSERT INTO user_favourite VALUES (?, ?);";
 				pool.query(sqlAdd,values,function(err,result){
 					if(err){
+					console.log("error at insert update favourite "+err)
 						res.json({			
 							status : false,
 							data : null,
 							message : err				
 						});			
 					} else {
-						res.json({		
+					console.log(" insert update favourite ")
+						res.json({	
+							data : true,
 							status : true,
 							message : " package added to favorite"			
 						});
@@ -352,7 +388,7 @@ router.post('/booking',function(req,res){
 		}else{
 			res.json({		
 				status : true,
-				data : result,
+				data : "done",
 				message : "done"			
 			});		
 			
