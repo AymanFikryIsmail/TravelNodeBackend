@@ -406,4 +406,63 @@ router.post('/booking',function(req,res){
 		
 	});
 });
+router.post('/rate',function(req,res){
+	var user =req.body.user
+	var package =req.body.package
+	var company =req.body.company
+	var value =req.body.value
+	var sql = "SELECT * FROM company_rate where pid=? and uid=?" ;
+	pool.query(sql,[package,user],function(err,result){
+				if(err){
+					res.json({			
+						status : false,
+						data : null,
+						message : err				
+					});			
+				}else{
+				if(result.length>0){
+					var sql1="UPDATE company_rate SET value=? where pid=? and uid=?"
+					pool.query(sql1,[value,package,user],function(err,result){
+						if(err){
+							res.json({			
+								status : false,
+								data : null,
+								message : err				
+							});
+						}else{
+							res.json({		
+								status : true,
+								data : result,
+								message : "package rate updated"			
+							});
+						}
+					})
+				} else {
+					var sql2 = "INSERT INTO company_rate VALUES (?,?,?,?)";
+					pool.query(sql2,[company,package,user,value],function(err,result){
+						if(err){
+							res.json({			
+								status : false,
+								data : null,
+								message : err				
+							});
+						} else {
+							res.json({		
+								status : true,
+								data : result,
+								message : "package rate added"			
+							});
+						}
+					})
+				}
+			// res.json({		
+			// 	status : true,
+			// 	data : "done",
+			// 	message : "done"			
+			// });		
+			
+		}		
+		
+	});
+});
 module.exports = router;
