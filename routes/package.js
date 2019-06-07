@@ -197,10 +197,20 @@ router.get('/search/all',function(req,res){
 				message : err				
 			});			
 		}else{
-			
+			var all =[]
+			if(result.length>0){
+				for(let e of result){
+					if(all.indexOf(e['city_name'])<0){
+						all.push(e["city_name"])
+					}
+					if(all.indexOf(e['c_location'])<0){
+						all.push(e["c_location"])
+					}
+				}
+			}
 			res.json({		
 				status : true,
-				data : result,
+				data : all,
 				message : "done"			
 			});		
 			

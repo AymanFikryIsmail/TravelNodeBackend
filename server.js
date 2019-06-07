@@ -19,11 +19,13 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var packageRouter = require('./routes/package');
 var companyRouter = require('./routes/company');
+var imageRouter = require('./routes/image');
 
 app.use('/', indexRouter);
 app.use('/users',usersRouter);
 app.use('/packages',packageRouter);
 app.use('/company',companyRouter);
+app.use('/image',imageRouter);
 
 
 

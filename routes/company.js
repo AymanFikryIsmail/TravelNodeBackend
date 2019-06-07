@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var pool = require('../config/config');
+var jwt = require('jwt-simple');
+// var expires = moment().add('days', 7).valueOf();
+var app = express();
 
 // admin or company login
 router.post('/login',function(req,res){
@@ -17,18 +20,24 @@ router.post('/login',function(req,res){
 			});			
 		}else{
 			if (result.length > 0) {
+			
 			var o ={};
 				o.id = result[0].cid ;
 				o.name = result[0].c_name;
 				o.user_phone = result[0].c_phone;
 				o.email = result[0].c_email;
-				o.password = result[0].c_password;
 				o.location = result[0].c_location;
                 o.photo_path = result[0].c_photo_path;
-                o.role = result[0].role;
+				o.role = result[0].role;
+				app.set('jwtTokenSecret', "wetravel");
+				var token = jwt.encode({
+					iss: o.email
+				}, app.get('jwtTokenSecret'));
+
                 res.json({		
                     status : true,
-                    company : o,
+					company : o,
+					token: token,
                     message : "done"			
                 });		
 			}else{
@@ -75,10 +84,10 @@ router.get('/mypackages',function(req,res){
 		
 	});
 });
-router.get('/mypackages',function(req,res){
+router.get('/package/details',function(req,res){
     var id = req.query.id
-	var sql = "";
-	pool.query(sql,[id,id,id],function(err,result){
+	var sql = "SELECT * FROM user_package where pid=?";
+	pool.query(sql,[id],function(err,result){
 				if(err){
                     res.json({			
                     status : false,
@@ -92,6 +101,49 @@ router.get('/mypackages',function(req,res){
 				message : "done"			
 			});		
 			 
+		}		
+		
+	});
+});
+router.get('/package/remove',function(req,res){
+    var id = req.query.id
+	var sql = "DELETE FROM package_photo where pid=? and NOT EXISTS (SELECT * FROM user_package where pid=package_photo.pid LIMIT 1)";
+	pool.query(sql,[id],function(err,result){
+		if(err){
+			res.json({			
+			status : false,
+			data : null,
+			message : err				
+			});			
+		}else{
+			var sql1 = "DELETE FROM user_favourite where pid=?"
+			pool.query(sql1,[id],function(err,result){
+				if(err){
+					res.json({			
+						status : false,
+						data : null,
+						message : err
+					})
+				} else {
+					var sql2 = "DELETE FROM packages where pid=? and NOT EXISTS (SELECT  * FROM user_package where pid=packages.pid LIMIT 1)" 
+					pool.query(sql2,[id],function(err,result){
+						if(err){
+							res.json({
+								status : false,
+								data : null,
+								message : err
+							})
+						} else {
+							res.json({
+								status : true ,
+								data : result ,
+								message : "package deleted"
+							})
+						}
+					})
+				}
+			})
+			
 		}		
 		
 	});
