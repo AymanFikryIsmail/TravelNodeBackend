@@ -43,7 +43,7 @@ router.post('/login',function(req,res){
 			}else{
 				res.json({			
 				status : false,
-				company : {},
+				company : null,
 				message : 'Authentication failed. Wrong Details.',			
 			});	
 			}
