@@ -9,6 +9,45 @@ var gcm = require('node-gcm');
 router.get('/', function(req, res, next) {
     res.send('respond with a resource in packages');
 	});
+router.get('/all',function(req,res){
+	//var date = new Date()-2
+	var user = req.query.id
+	var sql = "SELECT t1.* ,(SELECT pid FROM user_favourite where pid=t1.pid and uid=?) as fav_flag,(SELECT SUM(tickets) FROM user_package where pid=t1.pid) as adults,(SELECT SUM(discounted_tickets) FROM user_package where pid=t1.pid) as children,(SELECT AVG(value) FROM company_rate where cid=t1.cid) as rate,(SELECT c_name FROM company where cid=t1.cid) as company, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE  date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
+	pool.query(sql,[user],function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err		
+			});			
+		}else{
+			if(result.length>0){
+				var result = result.map(function(element){
+					if(element["paths"]){
+						element["paths"]=element["paths"].split(",")
+					}
+					if(!element["rate"]){
+						element["rate"]=0
+					}
+					if(!element["fav_flag"]){
+						element["fav_flag"] = 0
+					} else {
+						element["fav_flag"] = 1
+					}
+					return element
+				})
+			}
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			
+		}		
+		
+	});
+});
+
 router.get('/recent',function(req,res){
 	var date = new Date()-2
 	var user = req.query.id
@@ -423,6 +462,7 @@ router.post('/booking',function(req,res){
 	var name =req.body.userName
 
 	var values = [packageId, userId, adults, children , name]
+	console.log(values)
 	var sql = "INSERT INTO user_package (pid,uid,tickets,discounted_tickets , name) VALUES (?, ?, ?, ?,?);" ;
 	pool.query(sql,values,function(err,result){
 		console.log("result "+ result + "error" +err)
@@ -448,8 +488,12 @@ router.post('/rate',function(req,res){
 	var package =req.body.package
 	var company =req.body.company
 	var value =req.body.value
+	console.log("vals == "+ user + " ," + package+ " ,"  +  company+ "," + value)
+
 	var sql = "SELECT * FROM company_rate where pid=? and uid=?" ;
 	pool.query(sql,[package,user],function(err,result){
+	console.log("error == "+ err  + " result == " + result)
+
 				if(err){
 					res.json({			
 						status : false,
@@ -463,13 +507,13 @@ router.post('/rate',function(req,res){
 						if(err){
 							res.json({			
 								status : false,
-								data : null,
+								data : "error",
 								message : err				
 							});
 						}else{
 							res.json({		
 								status : true,
-								data : result,
+								data : "done",
 								message : "package rate updated"			
 							});
 						}
@@ -486,7 +530,7 @@ router.post('/rate',function(req,res){
 						} else {
 							res.json({		
 								status : true,
-								data : result,
+								data : "done",
 								message : "package rate added"			
 							});
 						}
@@ -502,8 +546,8 @@ router.post('/rate',function(req,res){
 		
 	});
 });
-router.post('/mine',function(req,res){
-	var user = req.body.user
+router.get('/mine',function(req,res){
+	var user = req.query.user
 	var sql = "SELECT up.*,p.* FROM user_package up INNER JOIN packages p ON up.pid=p.pid where up.uid=? ORDER BY booking_date DESC";
 	pool.query(sql,[user],function(err,result){
 				if(err){
