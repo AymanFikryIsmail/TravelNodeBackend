@@ -43,7 +43,7 @@ Description : return all available cities to use in [to field] (  use it in auto
 ************************************
 9] /packages/filter
 Method : get
-variables : from, to, minPrice, maxPrice, minDays, maxDays, rate, [dateFrom,dateTo(from datepicker withtype timestamp but those parameters are optional)]
+variables : from, to, minPrice, maxPrice, minDays, maxDays, rate, [dateFrom,dateTo(from datepicker withtype timestamp but those parameters are optional)],id
 Description : return all available packages after filtering(  use it in filter )
 ************************************
 10] /packages/favorite
