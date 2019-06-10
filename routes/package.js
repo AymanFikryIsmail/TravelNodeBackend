@@ -386,13 +386,16 @@ router.post('/booking',function(req,res){
 	var packageId =req.body.package
 	var adults =req.body.adults
 	var children =req.body.children
-	var values = [packageId, userId, adults, children]
-	var sql = "INSERT INTO user_package (pid,uid,tickets,discounted_tickets) VALUES (?, ?, ?, ?);" ;
+	var name =req.body.userName
+
+	var values = [packageId, userId, adults, children , name]
+	var sql = "INSERT INTO user_package (pid,uid,tickets,discounted_tickets , name) VALUES (?, ?, ?, ?,?);" ;
 	pool.query(sql,values,function(err,result){
+		console.log("result "+ result + "error" +err)
 				if(err){
 			res.json({			
 				status : false,
-				data : null,
+				data : "error ",
 				message : err				
 			});			
 		}else{
