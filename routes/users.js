@@ -54,7 +54,7 @@ router.post('/login',function(req,res){
 				o.email = result[0].email;
 			res.json({		
 				status : true,
-				data : result,
+				data : o,
 				message : "done"			
 			});		
 			}else{
@@ -74,8 +74,6 @@ router.post('/signup',function(req,res){
 	var password= req.body.password
 	var user_phone= req.body.user_phone
 	var city= req.body.city
-
-
 	var values = [name,email,password,user_phone, city];
 	var sql = "insert into user (name, email,password,user_phone,city) values(?,?,?,?,?) ";
 	pool.query(sql,values,function(err,result){
@@ -86,13 +84,22 @@ router.post('/signup',function(req,res){
 				message : err				
 			});			
 		}else{
-			
+			var sql = "SELECT * FROM user where  email =? and password =?   ";
+	var sqlValues = [email,password];
+	pool.query(sql,sqlValues,function(err,result){
+			var o ={};
+				o.id = result[0].uid ;
+				o.name = result[0].name;
+				o.user_phone = result[0].user_phone;
+				o.email = result[0].email;
+				o.city = result[0].city;
+
 			res.json({		
 				status : true,
-				data : result,
+				data : o,
 				message : "done"			
-			});		
-			
+			});
+			});
 		}		
 		
 	});
