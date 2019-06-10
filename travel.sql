@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 07, 2019 at 07:51 PM
+-- Generation Time: Jun 09, 2019 at 06:06 PM
 -- Server version: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
@@ -64,7 +64,7 @@ CREATE TABLE `company` (
 --
 
 INSERT INTO `company` (`cid`, `c_name`, `c_password`, `c_phone`, `c_email`, `c_location`, `c_photo_path`, `role`) VALUES
-(1, 'travel', 'admin', '01111111111', 'travel@gg.com', 'alexandria', 'anypath', 'admin');
+(1, 'travel', 'admin', '01111111111', 'travel@gg.com', 'alexandria', '26166621_1531556426965955_2487091143597023581_n.jpg', 'admin');
 
 -- --------------------------------------------------------
 
@@ -279,7 +279,7 @@ ALTER TABLE `user_favourite`
 -- Indexes for table `user_package`
 --
 ALTER TABLE `user_package`
-  ADD PRIMARY KEY (`pid`,`uid`),
+  ADD PRIMARY KEY (`pid`,`uid`,`booking_date`),
   ADD KEY `uid` (`uid`),
   ADD KEY `pid` (`pid`);
 
