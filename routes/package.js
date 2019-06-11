@@ -573,9 +573,10 @@ router.post('/rate',function(req,res){
 		
 	});
 });
+
 router.get('/mine',function(req,res){
 	var user = req.query.user
-	var sql = "SELECT up.*,p.* FROM user_package up INNER JOIN packages p ON up.pid=p.pid where up.uid=? ORDER BY booking_date DESC";
+	var sql = "SELECT up.*,p.*,(SELECT AVG(value) FROM company_rate where cid=p.cid) as rate,(SELECT GROUP_CONCAT(photo_path) FROM package_photo where pid=p.pid) as paths FROM user_package up INNER JOIN packages p ON up.pid=p.pid where up.uid=? ORDER BY booking_date DESC";
 	pool.query(sql,[user],function(err,result){
 				if(err){
 			res.json({			
@@ -584,7 +585,17 @@ router.get('/mine',function(req,res){
 				message : err				
 			});			
 		}else{
-			
+			if(result.length>0){
+				var result = result.map(function(element){
+					if(element["paths"]){
+						element["paths"]=element["paths"].split(",")
+					}
+					if(!element["rate"]){
+						element["rate"]=0
+					}
+					return element
+				})
+			}
 			res.json({		
 				status : true,
 				data : result,
