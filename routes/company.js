@@ -10,7 +10,7 @@ router.post('/login',function(req,res){
 	var email=req.body.email
 	var password= req.body.password
 	var values = [email,password];
-	var sql = "SELECT * FROM company where  c_email =? and c_password =?   ";
+	var sql = "SELECT *,(SELECT AVG(value) FROM company_rate where cid=company.cid) as rate FROM company where  c_email =? and c_password =?   ";
 	pool.query(sql,values,function(err,result){
 				if(err){
 			res.json({			
@@ -29,6 +29,10 @@ router.post('/login',function(req,res){
 				o.location = result[0].c_location;
                 o.photo_path = result[0].c_photo_path;
 				o.role = result[0].role;
+				o.rate = result[0].rate
+				if(!o.rate){
+					o.rate=0
+				}
 				app.set('jwtTokenSecret', "wetravel");
 				var token = jwt.encode({
 					iss: o.email
