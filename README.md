@@ -51,8 +51,13 @@ Method : get
 variables : user_id
 Description : return favorite packages
 ************************************
-10] /packages/favorite/update
+11] /packages/favorite/update
 Method : get
 variables : user_id,package_id
 Description : add or remove from favorite
+************************************
+12] /users/gplusfb
+Method : post
+variables : name,email,token
+Description : add or update user of Gmail or Facebook
 ************************************

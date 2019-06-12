@@ -124,7 +124,66 @@ router.post('/signup',function(req,res){
 		
 	});
 });
-
+router.post('/gplusfb',function(req,res){
+	var name = req.body.name
+	var email = req.body.email
+	var token = req.body.token
+	var sql = "SELECT * FROM user where token=?";
+	pool.query(sql,[token],function(err,result){
+				if(err){
+					res.json({			
+						status : false,
+						data : null,
+						message : err				
+					});			
+		}else{
+			if(result.length>0){
+					res.json({		
+					status : true,
+					data : result,
+					message : "user is exist",	
+			});
+			} else {
+				var sql1="INSERT INTO user (name,email,token) values (?,?,?)"
+				pool.query(sql1,[name,email,token],function(err,result){
+					if(err){
+						res.json({			
+							status : false,
+							data : null,
+							message : err				
+						});	
+					} else {
+						var sql = "SELECT * FROM user where token=?";
+						pool.query(sql,[token],function(err,result){
+							if(err){
+								res.json({			
+									status : false,
+									data : null,
+									message : err				
+								});
+							} else {
+								res.json({		
+									status : true,
+									data : result,
+									message : "user is not exist and inserted",	
+								});
+							}
+						})
+						
+					}
+				})
+			}
+			// res.json({		
+			// 	status : true,
+			// 	data : result,
+			// 	message : "done",
+			// 	// token : getToken		
+			// });		
+			 
+		}		
+		
+	});
+});
 module.exports = router;
 
 // module.exports.getToken = getToken;
