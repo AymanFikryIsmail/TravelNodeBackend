@@ -271,7 +271,7 @@ router.get('/search/from',function(req,res){
 });
 
 router.get('/search/all',function(req,res){
-	var sql = "SELECT DISTINCT c_location from travel.company UNION SELECT city_name from travel.cities";
+	var sql = "SELECT DISTINCT   c_location as city_name from travel.company UNION SELECT city_name from travel.cities  ";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
@@ -280,20 +280,21 @@ router.get('/search/all',function(req,res){
 				message : err				
 			});			
 		}else{
-			var all =[]
-			if(result.length>0){
-				for(let e of result){
-					if(all.indexOf(e['city_name'])<0){
-						all.push(e["city_name"])
-					}
-					if(all.indexOf(e['c_location'])<0){
-						all.push(e["c_location"])
-					}
-				}
-			}
+			// var all =[]
+			// if(result.length>0){
+			// 	for(let e of result){
+			// 		if(all.indexOf(e['city_name'])<0){
+			// 			all.push(e["city_name"])
+			// 		}
+			// 		if(all.indexOf(e['c_location'])<0){
+			// 			all.push(e["c_location"])
+			// 		}
+			// 	}
+			// }
+			console.log(result[0])
 			res.json({		
 				status : true,
-				data : all,
+				data : result,
 				message : "done"			
 			});		
 			
