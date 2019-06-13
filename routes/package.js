@@ -271,7 +271,7 @@ router.get('/search/from',function(req,res){
 });
 
 router.get('/search/all',function(req,res){
-	var sql = "SELECT DISTINCT city_name, c_location FROM company ,cities ";
+	var sql = "SELECT DISTINCT   c_location from travel.company UNION SELECT city_name from travel.cities  ";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
