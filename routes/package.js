@@ -161,7 +161,7 @@ router.get('/city',function(req,res){
 router.get('/city/packages',function(req,res){
 	var city =req.query.city
 	var user = req.query.id
-	var sql = "SELECT t1.*,(SELECT value FROM company_rate where pid=t1.pid and uid=?) as user_rate,,(SELECT pid FROM user_favourite where pid=t1.pid and uid=?) as fav_flag,(SELECT SUM(tickets) FROM user_package where pid=t1.pid) as adults,(SELECT SUM(discounted_tickets) FROM user_package where pid=t1.pid) as children,(SELECT AVG(value) FROM company_rate where cid=t1.cid) as rate,(SELECT c_name FROM company where cid=t1.cid) as company, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE travel_to=? and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
+	var sql = "SELECT t1.*,(SELECT value FROM company_rate where pid=t1.pid and uid=?) as user_rate,(SELECT pid FROM user_favourite where pid=t1.pid and uid=?) as fav_flag,(SELECT SUM(tickets) FROM user_package where pid=t1.pid) as adults,(SELECT SUM(discounted_tickets) FROM user_package where pid=t1.pid) as children,(SELECT AVG(value) FROM company_rate where cid=t1.cid) as rate,(SELECT c_name FROM company where cid=t1.cid) as company, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE travel_to=? and date > CURRENT_TIMESTAMP GROUP BY t1.pid" ;
 	pool.query(sql,[user,user,city],function(err,result){
 				if(err){
 			res.json({			
