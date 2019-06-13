@@ -152,4 +152,57 @@ router.get('/package/remove',function(req,res){
 		
 	});
 });
+router.get('/all',function(req,res){
+    var id = req.query.id
+	var sql = "SELECT *,(SELECT AVG(value) FROM company_rate where cid=company.cid) as rate FROM company where cid!=?";
+	pool.query(sql,[id],function(err,result){
+				if(err){
+                    res.json({			
+                    status : false,
+                    data : null,
+                    message : err				
+			});			
+		}else{
+			if(result.length>0){
+				result = result.map(function(element){
+					if(!element["rate"]){
+						element["rate"]=0
+					}
+					return element
+				})
+			}
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});		
+			 
+		}		
+		
+	});
+});
+router.post('/add',function(req,res){
+	var name = req.body.name
+	var email = req.body.email
+	var phone = req.body.phone
+	var location = req.body.location
+	var path = req.body.path
+	var password = req.body.password
+	var sql = "INSERT INTO company (c_name,c_password,c_phone,c_email,c_location,c_photo_path) values (?,?,?,?,?,?)";
+	pool.query(sql,[name,password,phone,email,location,path],function(err,result){
+		if(err){
+			res.json({		
+				status : false,
+				data : {},
+				message : err			
+			});	
+		} else {
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});	
+		}
+	})
+})
 module.exports = router;
