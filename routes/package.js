@@ -271,7 +271,7 @@ router.get('/search/from',function(req,res){
 });
 
 router.get('/search/all',function(req,res){
-	var sql = "SELECT DISTINCT   c_location as city_name from travel.company UNION SELECT city_name from travel.cities  ";
+	var sql = "SELECT city_name from cities";
 	pool.query(sql,function(err,result){
 				if(err){
 			res.json({			
@@ -280,18 +280,6 @@ router.get('/search/all',function(req,res){
 				message : err				
 			});			
 		}else{
-			// var all =[]
-			// if(result.length>0){
-			// 	for(let e of result){
-			// 		if(all.indexOf(e['city_name'])<0){
-			// 			all.push(e["city_name"])
-			// 		}
-			// 		if(all.indexOf(e['c_location'])<0){
-			// 			all.push(e["c_location"])
-			// 		}
-			// 	}
-			// }
-			console.log(result[0])
 			res.json({		
 				status : true,
 				data : result,
@@ -604,6 +592,53 @@ router.get('/mine',function(req,res){
 			});		
 			
 		}		
+		
+	});
+});
+router.post('/add',function(req,res){
+	var name = req.body.name
+	var from = req.body.from
+	var to = req.body.to
+	var price = req.body.price
+	var discounted = req.body.discounted
+	var tickets = req.body.tickets
+	var duration = req.body.duration
+	var date = req.body.date
+	var desc = req.body.desc
+	var cid = req.body.cid
+	var paths = req.body.paths
+	var values = [name,from,to,price,discounted,tickets,duration,date,desc,cid]
+	var sql = "INSERT INTO packages (p_name,travel_from,travel_to,price,discounted_price,avail_tickets,duration,date,description,cid) values (?,?,?,?,?,?,?,?,?,?)";
+	pool.query(sql,values,function(err,result){
+			if(err){
+				res.json({			
+					status : false,
+					data : null,
+					message : err				
+				});			
+			}else{
+				var sql1 = "INSERT INTO package_photo (photo_path,pid) values ?"
+				paths = paths.map(function(element){
+					return [element,result["insertId"]]
+				})
+				pool.query(sql1,[paths],function(err,result){
+					if(err){
+						res.json({			
+							status : false,
+							data : null,
+							message : err				
+						});			
+					}else {
+						res.json({		
+							status : true,
+							data : result,
+							message : "done"			
+						});
+					}
+				})
+						
+				
+			}		
 		
 	});
 });

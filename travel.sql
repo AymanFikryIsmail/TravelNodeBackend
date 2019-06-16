@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 09, 2019 at 06:06 PM
+-- Generation Time: Jun 16, 2019 at 06:01 PM
 -- Server version: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
@@ -39,8 +39,12 @@ CREATE TABLE `cities` (
 --
 
 INSERT INTO `cities` (`city_id`, `city_name`, `city_photo`) VALUES
-(1, 'luxor', 'path1'),
-(2, 'cairo', 'path2');
+(1, 'luxor', 'marse.2.jpg'),
+(2, 'cairo', 'aa.jpeg'),
+(3, 'alexandria', 'marse.jpg'),
+(4, 'sharm elsheikh', '1560544678604.7363.jpg'),
+(6, 'wady el rayaan', '1560672608432.0945.4.jpg'),
+(7, 'el saheel', '1560672933582.298marse.2.jpg');
 
 -- --------------------------------------------------------
 
@@ -50,7 +54,7 @@ INSERT INTO `cities` (`city_id`, `city_name`, `city_photo`) VALUES
 
 CREATE TABLE `company` (
   `cid` int(11) NOT NULL,
-  `c_name` varchar(100) NOT NULL,
+  `c_name` varchar(100) CHARACTER SET utf8 NOT NULL,
   `c_password` varchar(100) NOT NULL,
   `c_phone` text NOT NULL,
   `c_email` varchar(100) NOT NULL,
@@ -64,7 +68,10 @@ CREATE TABLE `company` (
 --
 
 INSERT INTO `company` (`cid`, `c_name`, `c_password`, `c_phone`, `c_email`, `c_location`, `c_photo_path`, `role`) VALUES
-(1, 'travel', 'admin', '01111111111', 'travel@gg.com', 'alexandria', '26166621_1531556426965955_2487091143597023581_n.jpg', 'admin');
+(1, 'travel', 'admin', '01111111111', 'travel@gg.com', 'alexandria', '26166621_1531556426965955_2487091143597023581_n.jpg', 'admin'),
+(3, 'golden bird', 'gggg', '01987654320', 'golden@gmail.com', 'luxor', 'logo.jpg', 'company'),
+(4, 'alyashmak', '1234', '01928374651', 'alyashmak@gmail.com', 'alexandria', '1560509609447.14334.jpg', 'company'),
+(5, 'Book and Fly', '123456', '01928374656', 'bookandfly@gmail.com', 'alexandria', '1560514438788.3193logo.png', 'company');
 
 -- --------------------------------------------------------
 
@@ -94,17 +101,17 @@ INSERT INTO `company_rate` (`cid`, `pid`, `uid`, `value`) VALUES
 
 CREATE TABLE `packages` (
   `pid` int(11) NOT NULL,
-  `p_name` varchar(100) NOT NULL,
+  `p_name` varchar(100) CHARACTER SET utf8 NOT NULL,
   `travel_from` varchar(100) NOT NULL,
   `travel_to` varchar(100) NOT NULL,
   `price` int(11) NOT NULL,
   `discounted_price` int(11) NOT NULL,
   `avail_tickets` int(11) NOT NULL,
   `duration` int(11) NOT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `description` varchar(1000) NOT NULL,
+  `date` bigint(20) NOT NULL,
+  `description` varchar(1000) CHARACTER SET utf8 NOT NULL,
   `cid` int(11) NOT NULL,
-  `addingDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `addingDate` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -112,7 +119,9 @@ CREATE TABLE `packages` (
 --
 
 INSERT INTO `packages` (`pid`, `p_name`, `travel_from`, `travel_to`, `price`, `discounted_price`, `avail_tickets`, `duration`, `date`, `description`, `cid`, `addingDate`) VALUES
-(5, 'luxor and aswan', 'alexandria', 'luxor', 2000, 1700, 10, 4, '2019-08-30 22:00:00', 'This returns all the dates for each advertisement, concatenated by commas. Where there are no dates in Table2 for a particular advertisment, you\'ll get NULL for the dates column', 1, '2019-05-20 12:20:19');
+(5, 'luxor and aswan', 'alexandria', 'luxor', 2000, 1700, 10, 4, 20190831, 'This returns all the dates for each advertisement, concatenated by commas. Where there are no dates in Table2 for a particular advertisment, you\'ll get NULL for the dates column', 1, 20190520142019),
+(8, 'أفريكانو بارك', 'alexandria', 'cairo', 180, 120, 23, 3, 20190628, 'أفريكانو باركأفريكانو باركأفريكانو باركأفريكانو باركأفريكانو باركأفريكانو باركأفريكانو باركأفريكانو بارك', 1, 20190610201709),
+(20, 'sharm elshaikh', 'alexandria', 'sharm elsheikh', 3000, 2600, 20, 3, 1559512800000, 'olaaaaaaaaaaaaaaav', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -122,7 +131,7 @@ INSERT INTO `packages` (`pid`, `p_name`, `travel_from`, `travel_to`, `price`, `d
 
 CREATE TABLE `package_photo` (
   `photo_id` int(11) NOT NULL,
-  `photo_path` varchar(200) NOT NULL,
+  `photo_path` varchar(200) CHARACTER SET utf8 NOT NULL,
   `pid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -132,7 +141,11 @@ CREATE TABLE `package_photo` (
 
 INSERT INTO `package_photo` (`photo_id`, `photo_path`, `pid`) VALUES
 (1, '1.jpg', 5),
-(2, '4.jpg', 5);
+(2, '4.jpg', 5),
+(4, '2.jpg', 8),
+(9, '1560630111999.51884.jpg', 20),
+(10, '1560630115682.41775.1.jpg', 20),
+(11, '1560630119119.69025.3.jpg', 20);
 
 -- --------------------------------------------------------
 
@@ -142,7 +155,7 @@ INSERT INTO `package_photo` (`photo_id`, `photo_path`, `pid`) VALUES
 
 CREATE TABLE `suggested_cities` (
   `suggestedCity_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8 NOT NULL,
   `company_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -158,16 +171,18 @@ CREATE TABLE `user` (
   `password` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `user_phone` text NOT NULL,
-  `city` varchar(100) NOT NULL
+  `city` varchar(100) NOT NULL,
+  `token` varchar(2000) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`uid`, `name`, `password`, `email`, `user_phone`, `city`) VALUES
-(1, 'walaa', 'walaa', 'walaa9402@gmail.com', '01120719197', 'alex'),
-(2, 'Doaa', 'doaa', 'doaa@gmail.com', 'path3', 'alexandria');
+INSERT INTO `user` (`uid`, `name`, `password`, `email`, `user_phone`, `city`, `token`) VALUES
+(1, 'walaa', 'walaa', 'walaa9402@gmail.com', '01120719197', 'alex', NULL),
+(2, 'Doaa', 'doaa', 'doaa@gmail.com', 'path3', 'alexandria', NULL),
+(4, 'sherif', '', 'sherif@gmail.com', '', '', 'iejfwdkunfkdefshvbnu,nbvtsdkjjucrehf8347hfwuiencjrewbvhiwsfubdcsjdhbcre');
 
 -- --------------------------------------------------------
 
@@ -198,7 +213,7 @@ CREATE TABLE `user_package` (
   `uid` int(11) NOT NULL,
   `tickets` int(11) NOT NULL,
   `discounted_tickets` int(11) NOT NULL,
-  `booking_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `booking_date` bigint(20) NOT NULL,
   `name` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -207,8 +222,8 @@ CREATE TABLE `user_package` (
 --
 
 INSERT INTO `user_package` (`pid`, `uid`, `tickets`, `discounted_tickets`, `booking_date`, `name`) VALUES
-(5, 1, 3, 2, '2019-05-29 09:24:52', 'Walaa Alaa Sayed'),
-(5, 2, 2, 2, '2019-06-01 11:33:38', 'Doaa Alaa Sayed');
+(5, 1, 3, 2, 20190529112452, 'Walaa Alaa Sayed'),
+(5, 2, 2, 2, 20190601133338, 'Doaa Alaa Sayed');
 
 --
 -- Indexes for dumped tables
@@ -291,37 +306,37 @@ ALTER TABLE `user_package`
 -- AUTO_INCREMENT for table `cities`
 --
 ALTER TABLE `cities`
-  MODIFY `city_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `city_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `company`
 --
 ALTER TABLE `company`
-  MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `cid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `packages`
 --
 ALTER TABLE `packages`
-  MODIFY `pid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `pid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `package_photo`
 --
 ALTER TABLE `package_photo`
-  MODIFY `photo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `photo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `suggested_cities`
 --
 ALTER TABLE `suggested_cities`
-  MODIFY `suggestedCity_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `suggestedCity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -340,8 +355,7 @@ ALTER TABLE `company_rate`
 --
 ALTER TABLE `packages`
   ADD CONSTRAINT `packages_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `company` (`cid`),
-  ADD CONSTRAINT `packages_ibfk_3` FOREIGN KEY (`travel_from`) REFERENCES `company` (`c_location`),
-  ADD CONSTRAINT `packages_ibfk_4` FOREIGN KEY (`travel_to`) REFERENCES `cities` (`city_name`);
+  ADD CONSTRAINT `packages_ibfk_2` FOREIGN KEY (`travel_to`) REFERENCES `cities` (`city_name`);
 
 --
 -- Constraints for table `package_photo`

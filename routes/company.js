@@ -205,4 +205,43 @@ router.post('/add',function(req,res){
 		}
 	})
 })
+router.post('/delete',function(req,res){
+	var company = req.body.id
+	var sql = "DELETE FROM company where cid=?"
+	pool.query(sql,[company],function(err,result){
+		if(err){
+			res.json({		
+				status : false,
+				data : {},
+				message : err			
+			});	
+		} else {
+			res.json({		
+				status : true,
+				data : result,
+				message : "done"			
+			});	
+		}
+	})
+})
+router.get('/availcities',function(req,res){
+    var id = req.query.id
+	var sql = "SELECT * FROM cities";
+	pool.query(sql,[id,id,id],function(err,result){
+				if(err){
+                    res.json({			
+                    status : false,
+                    data : null,
+                    message : err				
+				});			
+			}else{
+				res.json({		
+					status : true,
+					data : result,
+					message : "done"			
+				});			 
+			}		
+		
+	});
+});
 module.exports = router;
