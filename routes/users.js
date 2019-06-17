@@ -1,29 +1,10 @@
-// var jwt = require('jsonwebtoken');
-
-// var getToken = function(headers) {
-
-// 	if (headers && headers.authorization) {
-// 		var parted = headers.authorization.split(' ');
-// 		if (parted.length === 2) {
-// 			return parted[1];
-// 		} else {
-// 			return null;
-// 		}
-// 	} else {
-// 		return null;
-// 	}
-// };
-
-
+var jwt = require('jwt-simple');
 
 var express = require('express');
 var router = express.Router();
-//var token = require('../config/token');
 var pool = require('../config/config');
-/* var hash = require('password-hash');
+var app = express();
 
-var gcm = require('node-gcm');
- */
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource in users');
@@ -72,10 +53,15 @@ router.post('/login',function(req,res){
 				o.user_phone = result[0].user_phone;
 				o.email = result[0].email;
 				o.city = result[0].city;
+				app.set('jwtTokenSecret', "wetravel");
+				var token = jwt.encode({
+					iss: o.email
+				}, app.get('jwtTokenSecret'));
 			res.json({		
 				status : true,
 				data : o,
-				message : "done"			
+				message : "done",
+				token:token			
 			});		
 			}else{
 				res.json({			
