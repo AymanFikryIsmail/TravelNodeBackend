@@ -37,6 +37,15 @@ router.get('/all',function(req,res){
 					if(!element["user_rate"]){
 						element["user_rate"]=0
 					}
+					if(!element["adults"]){
+						element["adults"]=0
+					}
+					if(!element["children"]){
+						element["children"]=0
+					}
+					if(!element["paths"]){
+						element["paths"]=[]
+					}
 					return element
 				})
 			}
@@ -79,6 +88,15 @@ router.get('/recent',function(req,res){
 					if(!element["user_rate"]){
 						element["user_rate"]=0
 					}
+					if(!element["adults"]){
+						element["adults"]=0
+					}
+					if(!element["children"]){
+						element["children"]=0
+					}
+					if(!element["paths"]){
+						element["paths"]=[]
+					}
 					return element
 				})
 			}
@@ -95,7 +113,7 @@ router.get('/recent',function(req,res){
 router.get('/recommended',function(req,res){
 	var date = new Date().getTime()
 	var user = req.query.id
-	var sql = "SELECT t1.*,(SELECT value FROM company_rate where pid=t1.pid and uid=?) as user_rate,(SELECT pid FROM user_favourite where pid=t1.pid and uid=?) as fav_flag,(SELECT SUM(tickets) FROM user_package where pid=t1.pid) as adults,(SELECT SUM(discounted_tickets) FROM user_package where pid=t1.pid) as children,(SELECT AVG(value) FROM company_rate where cid=t1.cid) as rate,(SELECT c_name FROM company where cid=t1.cid) as company, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE t1.cid=(SELECT company.cid from company where rate>=4) and date > ? GROUP BY t1.pid" ;
+	var sql = "SELECT t1.*,(SELECT value FROM company_rate where pid=t1.pid and uid=?) as user_rate,(SELECT pid FROM user_favourite where pid=t1.pid and uid=?) as fav_flag,(SELECT SUM(tickets) FROM user_package where pid=t1.pid) as adults,(SELECT SUM(discounted_tickets) FROM user_package where pid=t1.pid) as children,(SELECT AVG(value) FROM company_rate where cid=t1.cid) as rate,(SELECT c_name FROM company where cid=t1.cid) as company, GROUP_CONCAT(t2.photo_path) AS paths from packages t1 LEFT JOIN package_photo t2 ON t2.pid=t1.pid WHERE date > ? GROUP BY t1.pid" ;
 	pool.query(sql,[user,user,date],function(err,result){
 				if(err){
 			res.json({			
@@ -120,15 +138,29 @@ router.get('/recommended',function(req,res){
 					if(!element["user_rate"]){
 						element["user_rate"]=0
 					}
-					if(!element["user_rate"]){
-						element["user_rate"]=0
+					if(!element["adults"]){
+						element["adults"]=0
+					}
+					if(!element["children"]){
+						element["children"]=0
+					}
+					if(!element["paths"]){
+						element["paths"]=[]
 					}
 					return element
 				})
+				var recomended=[]
+				result.map(function(element){
+					if(element["rate"]>=4){
+						recomended.push(element)
+					}
+				})
+			}else{
+				var recomended = []
 			}
 			res.json({		
 				status : true,
-				data : result,
+				data : recomended,
 				message : "done"			
 			});		
 			
@@ -192,6 +224,15 @@ router.get('/city/packages',function(req,res){
 					if(!element["user_rate"]){
 						element["user_rate"]=0
 					}
+					if(!element["adults"]){
+						element["adults"]=0
+					}
+					if(!element["children"]){
+						element["children"]=0
+					}
+					if(!element["paths"]){
+						element["paths"]=[]
+					}
 					return element
 				})
 			}
@@ -236,6 +277,15 @@ router.get('/search',function(req,res){
 					}
 					if(!element["user_rate"]){
 						element["user_rate"]=0
+					}
+					if(!element["adults"]){
+						element["adults"]=0
+					}
+					if(!element["children"]){
+						element["children"]=0
+					}
+					if(!element["paths"]){
+						element["paths"]=[]
 					}
 					return element
 				})
@@ -360,6 +410,15 @@ router.get('/filter',function(req,res){
 					if(!element["user_rate"]){
 						element["user_rate"]=0
 					}
+					if(!element["adults"]){
+						element["adults"]=0
+					}
+					if(!element["children"]){
+						element["children"]=0
+					}
+					if(!element["paths"]){
+						element["paths"]=[]
+					}
 					return element
 				})
 			}
@@ -400,6 +459,15 @@ router.get('/favorite',function(req,res){
 					}
 					if(!element["user_rate"]){
 						element["user_rate"]=0
+					}
+					if(!element["adults"]){
+						element["adults"]=0
+					}
+					if(!element["children"]){
+						element["children"]=0
+					}
+					if(!element["paths"]){
+						element["paths"]=[]
 					}
 					return element
 				})
@@ -588,6 +656,9 @@ router.get('/mine',function(req,res){
 					}
 					if(!element["rate"]){
 						element["rate"]=0
+					}
+					if(!element["paths"]){
+						element["paths"]=[]
 					}
 					return element
 				})
