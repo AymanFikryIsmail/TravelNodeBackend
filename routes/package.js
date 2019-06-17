@@ -483,10 +483,10 @@ router.post('/booking',function(req,res){
 	var adults =req.body.adults
 	var children =req.body.children
 	var name =req.body.userName
-
-	var values = [packageId, userId, adults, children , name]
+	var date = new Date().getTime()
+	var values = [packageId, userId, adults, children , name,date]
 	console.log(values)
-	var sql = "INSERT INTO user_package (pid,uid,tickets,discounted_tickets , name) VALUES (?, ?, ?, ?,?);" ;
+	var sql = "INSERT INTO user_package (pid,uid,tickets,discounted_tickets , name,booking_date) VALUES (?, ?, ?, ?,?,?);" ;
 	pool.query(sql,values,function(err,result){
 		console.log("result "+ result + "error" +err)
 				if(err){
