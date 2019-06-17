@@ -113,4 +113,31 @@ router.post('/request/delete',function(req,res){
 		
 	});
 });
+router.get('/statistics',function(req,res){
+	var sql = "SELECT city_name,(SELECT SUM(tickets+discounted_tickets) FROM user_package where pid=(SELECT pid FROM packages where travel_to=city_name)) as num FROM cities";
+	pool.query(sql,function(err,result){
+				if(err){
+			res.json({			
+				status : false,
+				data : null,
+				message : err				
+			});			
+		}else{
+			if(result.length>0){
+				result = result.map(function(element){
+					if(!element["num"]){
+						element["num"]=0
+					}
+				})
+			}
+			res.json({		
+				status : true,
+				data : result,
+				message : "request deleted"			
+			});		
+			
+		}		
+		
+	});
+});
 module.exports = router;

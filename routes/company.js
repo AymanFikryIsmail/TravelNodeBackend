@@ -10,9 +10,19 @@ router.post('/login',function(req,res){
 	var email=req.body.email
 	var password= req.body.password
 	var values = [email,password];
-	var sql = "SELECT *,(SELECT AVG(value) FROM company_rate where cid=company.cid) as rate FROM company where  c_email =? and c_password =?   ";
+	var sql = "SELECT * FROM company where c_email=?"
+	pool.query(sql,[email],function(err,result){
+		if(err){
+			res.json({			
+				status : false,
+				data : {},
+				message : err				
+			});			
+		}else{
+			if(result.length>0){
+				var sql = "SELECT *,(SELECT AVG(value) FROM company_rate where cid=company.cid) as rate FROM company where  c_email =? and c_password =?   ";
 	pool.query(sql,values,function(err,result){
-				if(err){
+		if(err){
 			res.json({			
 				status : false,
 				data : {},
@@ -48,12 +58,23 @@ router.post('/login',function(req,res){
 				res.json({			
 				status : false,
 				company : null,
-				message : 'Authentication failed. Wrong Details.',			
+				message : 'wrong password',			
 			});	
 			}
 		}		
 		
 	});
+			} else {
+				res.json({		
+                    status : true,
+					company : result,
+					token: null,
+                    message : "wrong email"			
+                });
+			}
+		}
+	})
+	
 });
 //  my packages
 router.get('/mypackages',function(req,res){
@@ -244,4 +265,5 @@ router.get('/availcities',function(req,res){
 		
 	});
 });
+
 module.exports = router;

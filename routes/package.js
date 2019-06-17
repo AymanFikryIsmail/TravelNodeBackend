@@ -614,8 +614,9 @@ router.post('/add',function(req,res){
 	var desc = req.body.desc
 	var cid = req.body.cid
 	var paths = req.body.paths
-	var values = [name,from,to,price,discounted,tickets,duration,date,desc,cid]
-	var sql = "INSERT INTO packages (p_name,travel_from,travel_to,price,discounted_price,avail_tickets,duration,date,description,cid) values (?,?,?,?,?,?,?,?,?,?)";
+	var add = new Date().getTime()
+	var values = [name,from,to,price,discounted,tickets,duration,date,desc,cid,add]
+	var sql = "INSERT INTO packages (p_name,travel_from,travel_to,price,discounted_price,avail_tickets,duration,date,description,cid,addingDate) values (?,?,?,?,?,?,?,?,?,?,?)";
 	pool.query(sql,values,function(err,result){
 			if(err){
 				res.json({			
