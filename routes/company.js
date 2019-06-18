@@ -96,6 +96,15 @@ router.get('/mypackages',function(req,res){
 					if(!element["rate"]){
 						element["rate"]=0
 					}
+					if(!element["adults"]){
+						element["adults"]=0
+					}
+					if(!element["children"]){
+						element["children"]=0
+					}
+					if(!element["paths"]){
+						element["paths"]=[]
+					}
 					return element
 				})
 			}
