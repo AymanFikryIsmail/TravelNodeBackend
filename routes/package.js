@@ -171,8 +171,10 @@ router.get('/recommended',function(req,res){
 router.get('/city',function(req,res){
 	var date = new Date().getTime()
 	console.log(date)
-	var sql = "SELECT DISTINCT cities.* from cities JOIN packages ON cities.city_name=packages.travel_to where  date > ?";
-	pool.query(sql,[date],function(err,result){
+	var sql = "SELECT DISTINCT cities.* from cities JOIN packages ON cities.city_name=packages.travel_to ";
+	pool.query(sql,function(err,result){
+	console.log(err  + " res : "+result )
+
 				if(err){
 			res.json({			
 				status : false,
