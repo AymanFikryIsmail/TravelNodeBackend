@@ -4,6 +4,7 @@
   "description": "backend app for the webservice for the mobile",
   "main": "index.js",
   "scripts": {
+  "start": "node server.js" ,
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
