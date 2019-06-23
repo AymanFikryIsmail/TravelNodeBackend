@@ -44,11 +44,10 @@ app.use(function(req, res, next) {
 	  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	  next();
 	});
-	
-	
-	
-app.listen(3000, function () {
-  console.log('Example host1 app listening on port 3000!')
+
+
+	app.listen(process.env.PORT || 3000, function () {
+  console.log('Example host2 app listening on port 3000!')
 })
 
 
